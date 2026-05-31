@@ -1,17 +1,23 @@
-# Clasificador de Orquideas (TFLite + Streamlit)
+# Demo de Clasificacion de Orquideas (TFLite + Streamlit)
 
-Aplicacion web simple para clasificar orquideas desde una imagen usando un modelo TensorFlow Lite.
+Este repositorio es un demo para probar un modelo de clasificacion de orquideas.
+
+## Alcance
+
+- Solo esta pensado para validar rapidamente el modelo con imagenes.
+- No es una aplicacion de produccion.
+- No incluye garantias de precision clinica/cientifica.
 
 ## Archivos principales
 
-- `app.py`: aplicacion Streamlit.
-- `orchid_classifier_float32.tflite`: modelo usado por la app.
+- `app.py`: interfaz Streamlit para prueba manual.
+- `orchid_classifier_float32.tflite`: modelo principal usado por la demo.
 - `model_metadata.json`: clases y parametros de preprocesamiento.
 - `requirements.txt`: dependencias de Python.
 
 ## Requisitos
 
-- Python 3.10+ (recomendado: entorno virtual)
+- Python 3.10 o superior (recomendado: entorno virtual).
 
 ## Instalacion
 
@@ -21,19 +27,17 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## Ejecutar
+## Ejecucion
 
 ```bash
 source .venv/bin/activate
 streamlit run app.py
 ```
 
-Abre la URL que muestra Streamlit (normalmente http://localhost:8501).
+Luego abre la URL local que muestra Streamlit (usualmente http://localhost:8501).
 
-## Entrada
+## Que permite probar
 
-La app permite:
-
-- Subir imagen (jpg, jpeg, png)
-- Tomar foto con camara
-- Pegar imagen desde portapapeles
+- Subir imagen (jpg, jpeg, png).
+- Tomar foto con camara.
+- Pegar imagen desde el portapapeles.

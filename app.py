@@ -1,7 +1,7 @@
 import json
 import numpy as np
 import streamlit as st
-import tensorflow as tf
+from ai_edge_litert.interpreter import Interpreter
 
 from PIL import Image
 from streamlit_paste_button import paste_image_button
@@ -456,8 +456,8 @@ SPECIES_INFO: dict[str, str] = {
 # =====================================================
 
 @st.cache_resource
-def load_model() -> tf.lite.Interpreter:
-    interpreter = tf.lite.Interpreter(
+def load_model() -> Interpreter:
+    interpreter = Interpreter(
         model_path="orchid_classifier_float32.tflite"
     )
     interpreter.allocate_tensors()
@@ -481,7 +481,7 @@ def preprocess_image(
 
 
 def predict(
-    interpreter: tf.lite.Interpreter,
+    interpreter: Interpreter,
     image: Image.Image,
     img_size: int,
     mean: np.ndarray,

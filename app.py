@@ -71,6 +71,23 @@ def inject_styles() -> None:
 
             #MainMenu, footer { visibility: hidden; }
 
+            header[data-testid="stHeader"],
+            [data-testid="stToolbar"],
+            [data-testid="stDecoration"],
+            [data-testid="stStatusWidget"],
+            [data-testid="stAppDeployButton"],
+            [data-testid="stManageAppButton"],
+            .stAppDeployButton,
+            .stAppToolbar,
+            .stStatusWidget,
+            button[title="Manage app"],
+            a[title="Manage app"] {
+                display: none !important;
+                visibility: hidden !important;
+                opacity: 0 !important;
+                pointer-events: none !important;
+            }
+
             /* ---- Header ---- */
             .app-header {
                 display: flex;

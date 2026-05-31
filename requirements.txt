@@ -2,4 +2,3 @@ streamlit
 ai-edge-litert==2.1.5
 numpy
 pillow
-streamlit-paste-button

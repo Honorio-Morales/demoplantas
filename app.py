@@ -191,7 +191,7 @@ def inject_styles() -> None:
             .pred-card::after {
                 content: '';
                 position: absolute;
-                bottom: -25px; left: 70px;
+                bottom: -25px; left: 90px;
                 width: 90px; height: 90px;
                 border-radius: 50%;
                 background: rgba(255,255,255,0.04);
@@ -392,28 +392,43 @@ def inject_styles() -> None:
                 padding-top: 18px !important;
             }
 
-            /* Contenedor del paste button: estilo limpio sin franja oscura */
-            [data-testid="stCustomComponentV1"] {
-                background: var(--bg-card) !important;
-                border: 1px solid var(--border) !important;
-                border-radius: var(--radius) !important;
-                padding: 8px !important;
+            /* Paste button: usar el wrapper real (key-paste_button) y recortar la franja sobrante */
+            [data-testid="stElementContainer"].st-key-paste_button {
+                min-height: 0 !important;
+                height: auto !important;
+                padding: 0 !important;
                 margin-top: 6px !important;
-                overflow: hidden !important;
+                overflow: visible !important;
             }
 
-            /* Muestra solo el area del boton del componente */
-            [data-testid="stCustomComponentV1"] iframe {
-                width: 340px !important;
-                max-width: 100% !important;
-                height: 52px !important;
-                min-height: 52px !important;
-                border: none !important;
-                border-radius: calc(var(--radius) - 4px) !important;
-                background: transparent !important;
-                color-scheme: light;
+            [data-testid="stElementContainer"].st-key-paste_button > div {
+                min-height: 0 !important;
+                height: auto !important;
+                padding: 0 !important;
                 overflow: hidden !important;
+                border-radius: var(--radius) !important;
+            }
+
+            [data-testid="stElementContainer"].st-key-paste_button iframe[data-testid="stCustomComponentV1"] {
+                width: 100% !important;
+                max-width: 100% !important;
+                min-height: 0 !important;
+                height: 56px !important;
+                max-height: 56px !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                border: none !important;
+                background: transparent !important;
+                overflow: hidden !important;
+                border-radius: var(--radius) !important;
                 display: block !important;
+            }
+
+            [data-testid="stElementContainer"].st-key-paste_button > div:has(> iframe[data-testid="stCustomComponentV1"]) {
+                height: 56px !important;
+                min-height: 56px !important;
+                max-height: 56px !important;
+                overflow: hidden !important;
             }
         </style>
         """,
@@ -678,6 +693,7 @@ def input_tabs() -> Image.Image | None:
             background_color="#1f6b50",
             hover_background_color="#174f3c",
             text_color="#ffffff",
+            key="paste_button_v4",
         )
         if pasted.image_data is not None:
             image = pasted.image_data.convert("RGB")

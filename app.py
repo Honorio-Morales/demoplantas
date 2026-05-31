@@ -1,4 +1,5 @@
 import json
+import textwrap
 import numpy as np
 import streamlit as st
 from ai_edge_litert.interpreter import Interpreter
@@ -391,26 +392,28 @@ def inject_styles() -> None:
                 padding-top: 18px !important;
             }
 
-            /* Contenedor del paste button: separacion externa suave */
+            /* Contenedor del paste button: estilo limpio sin franja oscura */
             [data-testid="stCustomComponentV1"] {
-                background: transparent !important;
-                border: none !important;
-                border-radius: 0 !important;
-                padding: 4px 0 !important;
+                background: var(--bg-card) !important;
+                border: 1px solid var(--border) !important;
+                border-radius: var(--radius) !important;
+                padding: 8px !important;
                 margin-top: 6px !important;
-                overflow: visible !important;
+                overflow: hidden !important;
             }
 
-            /* Limita el iframe al alto del boton para ocultar el fondo negro interno */
+            /* Muestra solo el area del boton del componente */
             [data-testid="stCustomComponentV1"] iframe {
-                width: 100% !important;
+                width: 340px !important;
+                max-width: 100% !important;
                 height: 52px !important;
                 min-height: 52px !important;
                 border: none !important;
-                border-radius: var(--radius) !important;
+                border-radius: calc(var(--radius) - 4px) !important;
                 background: transparent !important;
                 color-scheme: light;
                 overflow: hidden !important;
+                display: block !important;
             }
         </style>
         """,
@@ -542,17 +545,19 @@ def ui_top5_bars(probs: np.ndarray, class_names: list[str]) -> None:
         pct = float(probs[idx]) * 100
         name = class_names[idx]
         first = "is-first" if i == 0 else ""
-        rows += f"""
-        <div>
-            <div class="pred-row-meta">
-                <span class="pred-row-name {first}">{name}</span>
-                <span class="pred-row-pct {first}">{pct:.1f}%</span>
+        rows += textwrap.dedent(
+            f"""
+            <div>
+                <div class="pred-row-meta">
+                    <span class="pred-row-name {first}">{name}</span>
+                    <span class="pred-row-pct {first}">{pct:.1f}%</span>
+                </div>
+                <div class="bar-track">
+                    <div class="bar-fill {first}" style="width:{pct:.2f}%"></div>
+                </div>
             </div>
-            <div class="bar-track">
-                <div class="bar-fill {first}" style="width:{pct:.2f}%"></div>
-            </div>
-        </div>
-        """
+            """
+        ).strip()
     st.markdown(
         f'<div class="pred-list">{rows}</div>',
         unsafe_allow_html=True,

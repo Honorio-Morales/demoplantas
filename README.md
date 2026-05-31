@@ -15,26 +15,6 @@ Este repositorio es un demo para probar un modelo de clasificacion de orquideas.
 - `model_metadata.json`: clases y parametros de preprocesamiento.
 - `requirements.txt`: dependencias de Python.
 
-## Requisitos
-
-- Python 3.10 o superior (recomendado: entorno virtual).
-
-## Instalacion
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-```
-
-## Ejecucion
-
-```bash
-source .venv/bin/activate
-streamlit run app.py
-```
-
-Luego abre la URL local que muestra Streamlit (usualmente http://localhost:8501).
 
 ## Que permite probar
 

@@ -1,4 +1,5 @@
 import json
+import os
 import textwrap
 import numpy as np
 import streamlit as st
@@ -6,6 +7,9 @@ from ai_edge_litert.interpreter import Interpreter
 
 from PIL import Image
 from streamlit_paste_button import paste_image_button
+
+
+APK_PATH = "app-debug_qurakuna_demo_v0.1.apk"
 
 
 # =====================================================
@@ -128,6 +132,87 @@ def inject_styles() -> None:
                 color: var(--text-muted);
                 margin: 4px 0 0;
                 letter-spacing: 0.2px;
+            }
+
+            .download-cta {
+                margin: 14px 0 4px;
+                padding: 18px 20px 16px;
+                background:
+                    radial-gradient(circle at top right, rgba(116,198,157,0.18), transparent 32%),
+                    linear-gradient(135deg, rgba(255,255,255,0.96), rgba(216,243,220,0.68));
+                border: 1px solid rgba(45,90,61,0.14);
+                border-radius: var(--radius-lg);
+                box-shadow: 0 10px 28px rgba(45,90,61,0.10);
+            }
+
+            .download-cta-head {
+                display: flex;
+                align-items: flex-start;
+                gap: 12px;
+                margin-bottom: 12px;
+            }
+
+            .download-cta-icon {
+                width: 42px;
+                height: 42px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, var(--primary-mid), var(--primary));
+                color: #fff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+                box-shadow: 0 8px 18px rgba(45,90,61,0.22);
+            }
+
+            .download-cta-icon i {
+                font-size: 1rem;
+            }
+
+            .download-cta-eyebrow {
+                font-size: 0.72rem;
+                font-weight: 700;
+                letter-spacing: 1.1px;
+                text-transform: uppercase;
+                color: var(--primary-mid);
+                margin-bottom: 3px;
+            }
+
+            .download-cta-title {
+                font-family: 'Spectral', Georgia, serif;
+                font-size: 1.08rem;
+                font-weight: 700;
+                color: #0f2318;
+                margin: 0 0 4px;
+                line-height: 1.2;
+            }
+
+            .download-cta-text {
+                font-size: 0.9rem;
+                color: var(--text-mid);
+                line-height: 1.5;
+                margin: 0;
+            }
+
+            .download-cta-action {
+                margin-top: 8px;
+            }
+
+            [data-testid="stDownloadButton"] button {
+                background: var(--primary) !important;
+                color: #ffffff !important;
+                border: 1px solid var(--primary) !important;
+                border-radius: var(--radius-sm) !important;
+                padding: 0.72rem 1rem !important;
+                font-weight: 600 !important;
+                box-shadow: 0 10px 20px rgba(45,90,61,0.18) !important;
+                width: 100% !important;
+            }
+
+            [data-testid="stDownloadButton"] button:hover {
+                background: var(--primary-mid) !important;
+                border-color: var(--primary-mid) !important;
+                color: #ffffff !important;
             }
 
             /* ---- Divider ---- */
@@ -499,6 +584,12 @@ def load_model() -> Interpreter:
     return interpreter
 
 
+@st.cache_data
+def load_apk_bytes() -> bytes:
+    with open(APK_PATH, "rb") as f:
+        return f.read()
+
+
 # =====================================================
 # PROCESAMIENTO
 # =====================================================
@@ -568,6 +659,36 @@ def ui_section_label(icon: str, text: str) -> None:
 
 def ui_divider() -> None:
     st.markdown('<div class="hr"></div>', unsafe_allow_html=True)
+
+
+def ui_download_apk() -> None:
+    if not os.path.exists(APK_PATH):
+        st.warning("No se encontró el APK en la raíz del proyecto.")
+        return
+
+    st.markdown(
+        """
+        <div class="download-cta">
+            <div class="download-cta-head">
+                <div class="download-cta-icon"><i class="bi bi-phone-flip"></i></div>
+                <div>
+                    <div class="download-cta-eyebrow">Demo móvil</div>
+                    <div class="download-cta-title">Descarga la primera demo de nuestra app aquí</div>
+                    <p class="download-cta-text">Obtén el APK de la versión inicial para instalarla directamente en tu Android.</p>
+                </div>
+            </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    st.markdown('<div class="download-cta-action">', unsafe_allow_html=True)
+    st.download_button(
+        label="Descargar demo APK",
+        data=load_apk_bytes(),
+        file_name=os.path.basename(APK_PATH),
+        mime="application/vnd.android.package-archive",
+        help="Descarga el archivo APK de la demo desde la carpeta raíz del proyecto.",
+    )
+    st.markdown("</div>", unsafe_allow_html=True)
 
 
 def ui_top5_bars(probs: np.ndarray, class_names: list[str]) -> None:
@@ -734,6 +855,7 @@ def main() -> None:
     interpreter = load_model()
 
     ui_header()
+    ui_download_apk()
     ui_divider()
 
     image = input_tabs()

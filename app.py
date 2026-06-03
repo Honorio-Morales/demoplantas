@@ -1,6 +1,8 @@
 import json
 import os
 import textwrap
+from threading import Lock
+
 import numpy as np
 import streamlit as st
 from ai_edge_litert.interpreter import Interpreter
@@ -10,6 +12,8 @@ from streamlit_paste_button import paste_image_button
 
 
 APK_PATH = "QurakunaApp-v6.0.apk"
+DOWNLOAD_COUNTER_PATH = "download_counter.json"
+DOWNLOAD_COUNTER_LOCK = Lock()
 
 
 # =====================================================
@@ -590,6 +594,31 @@ def load_apk_bytes() -> bytes:
         return f.read()
 
 
+def load_download_count() -> int:
+    if not os.path.exists(DOWNLOAD_COUNTER_PATH):
+        return 2
+
+    try:
+        with open(DOWNLOAD_COUNTER_PATH, "r", encoding="utf-8") as f:
+            payload = json.load(f)
+        return int(payload.get("count", 2))
+    except (OSError, ValueError, TypeError, json.JSONDecodeError):
+        return 2
+
+
+def save_download_count(count: int) -> None:
+    with open(DOWNLOAD_COUNTER_PATH, "w", encoding="utf-8") as f:
+        json.dump({"count": count}, f)
+
+
+def increment_download_count() -> int:
+    with DOWNLOAD_COUNTER_LOCK:
+        current_count = load_download_count()
+        new_count = current_count + 1
+        save_download_count(new_count)
+        return new_count
+
+
 # =====================================================
 # PROCESAMIENTO
 # =====================================================
@@ -666,8 +695,7 @@ def ui_download_apk() -> None:
         st.warning("No se encontró el APK en la raíz del proyecto.")
         return
 
-    if "download_count" not in st.session_state:
-        st.session_state.download_count = 2
+    download_count = load_download_count()
 
     st.markdown(
         """
@@ -696,9 +724,9 @@ def ui_download_apk() -> None:
         st.markdown("</div>", unsafe_allow_html=True)
     with count_col:
         if clicked:
-            st.session_state.download_count += 1
+            download_count = increment_download_count()
         st.markdown(
-            f'<div style="padding-top:0.45rem; text-align:left; font-size:0.84rem; color:var(--text-muted);">cantidad de descargas: <strong style="color:var(--text-mid);">{st.session_state.download_count}</strong></div>',
+            f'<div style="padding-top:0.45rem; text-align:left; font-size:0.84rem; color:var(--text-muted);">cantidad de descargas: <strong style="color:var(--text-mid);">{download_count}</strong></div>',
             unsafe_allow_html=True,
         )
 

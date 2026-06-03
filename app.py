@@ -9,7 +9,7 @@ from PIL import Image
 from streamlit_paste_button import paste_image_button
 
 
-APK_PATH = "app-debug_qurakuna_demo_v0.1.apk"
+APK_PATH = "QurakunaApp-v6.0.apk"
 
 
 # =====================================================
@@ -666,6 +666,9 @@ def ui_download_apk() -> None:
         st.warning("No se encontró el APK en la raíz del proyecto.")
         return
 
+    if "download_count" not in st.session_state:
+        st.session_state.download_count = 2
+
     st.markdown(
         """
         <div class="download-cta">
@@ -680,15 +683,24 @@ def ui_download_apk() -> None:
         """,
         unsafe_allow_html=True,
     )
-    st.markdown('<div class="download-cta-action">', unsafe_allow_html=True)
-    st.download_button(
-        label="Descargar demo APK",
-        data=load_apk_bytes(),
-        file_name=os.path.basename(APK_PATH),
-        mime="application/vnd.android.package-archive",
-        help="Descarga el archivo APK de la demo desde la carpeta raíz del proyecto.",
-    )
-    st.markdown("</div>", unsafe_allow_html=True)
+    action_col, count_col = st.columns([3, 1])
+    with action_col:
+        st.markdown('<div class="download-cta-action">', unsafe_allow_html=True)
+        clicked = st.download_button(
+            label="Descargar demo APK",
+            data=load_apk_bytes(),
+            file_name=os.path.basename(APK_PATH),
+            mime="application/vnd.android.package-archive",
+            help="Descarga el archivo APK de la demo desde la carpeta raíz del proyecto.",
+        )
+        st.markdown("</div>", unsafe_allow_html=True)
+    with count_col:
+        if clicked:
+            st.session_state.download_count += 1
+        st.markdown(
+            f'<div style="padding-top:0.45rem; text-align:left; font-size:0.84rem; color:var(--text-muted);">cantidad de descargas: <strong style="color:var(--text-mid);">{st.session_state.download_count}</strong></div>',
+            unsafe_allow_html=True,
+        )
 
 
 def ui_top5_bars(probs: np.ndarray, class_names: list[str]) -> None:
